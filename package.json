@@ -1,5 +1,6 @@
 {
   "name": "devcodecampautomationsnodejs",
+  "type": "module",
   "version": "1.0.0",
   "description": "A Node.js version of several automation scripts used to administer the bootcamp's Notion platform",
   "main": "index.js",
@@ -10,6 +11,7 @@
   "author": "JJ Vega",
   "license": "ISC",
   "dependencies": {
+    "@notionhq/client": "^0.3.2",
     "dotenv": "^10.0.0"
   }
 }
