@@ -1,0 +1,15 @@
+{
+  "name": "devcodecampautomationsnodejs",
+  "version": "1.0.0",
+  "description": "A Node.js version of several automation scripts used to administer the bootcamp's Notion platform",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js"
+  },
+  "author": "JJ Vega",
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^10.0.0"
+  }
+}
