@@ -37,10 +37,52 @@ const getDatabaseById = async (notionClient, databaseId) => {
     const response = await notionClient.databases.query({
       database_id: databaseId,
     })
-    return response.results
+    return formatDatabaseData(response.results)
   } catch (error) {
     console.error(error)
   }
 }
 
-export { addItem, getDatabaseById }
+const formatDatabaseData = data => {
+  let formattedData = data.map(page => {
+    return {
+      id: page.id,
+      properties: page.properties,
+    }
+  })
+
+  return formattedData
+}
+
+const filterPagesBySelectProperty = (data, property, value) => {
+  let filteredData = data.filter(page => {
+    if (page.properties[property].select.name === value) {
+      return true
+    }
+  })
+
+  return filteredData
+}
+
+const updateStandupStatusToNotStarted = async (data, notionClient) => {
+  data.forEach(async page => {
+    try {
+      let response = await notionClient.pages.update({
+        page_id: page.id,
+        properties: {
+          "Standup Status": { select: { name: "Not Started" } },
+        },
+      })
+      console.log(response)
+    } catch (error) {
+      console.log(error)
+    }
+  })
+}
+
+export {
+  addItem,
+  getDatabaseById,
+  filterPagesBySelectProperty,
+  updateStandupStatusToNotStarted,
+}
