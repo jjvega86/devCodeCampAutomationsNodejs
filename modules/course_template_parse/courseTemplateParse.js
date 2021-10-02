@@ -1,7 +1,7 @@
-const fs = require("fs")
-const path = require("path")
-const csv = require("fast-csv")
-const NotionEvent = require("../../classes/NotionEvent")
+import fs from "fs"
+import path from "path"
+import csv from "fast-csv"
+import NotionEvent from "../../classes/NotionEvent"
 
 //* I want to parse each row of the csv
 //* I will create a new rowType for all events in that row
@@ -9,27 +9,31 @@ const NotionEvent = require("../../classes/NotionEvent")
 //* I will then import that csv to Notion (ideally in the correct format)
 
 //* This data array will contain all of the individual NotionEvent objects created from all lectures and assignments in the course
-let data = []
 
-fs.createReadStream(
-  path.join(
-    __dirname,
-    "assets",
-    "FullStackSoftwareDevCourseSchedule12week - 12 Weeks V2.csv"
+export default parseCourseTemplate = () => {
+  let data = []
+  fs.createReadStream(
+    path.join(
+      __dirname,
+      "assets",
+      "FullStackSoftwareDevCourseSchedule12week - 12 Weeks V2.csv"
+    )
   )
-)
-  .pipe(csv.parse({ headers: true }))
-  .on("error", error => console.error(error))
-  .on("data", row => {
-    let newRow = parseRow(row)
-    segregateData(newRow)
-  })
-  .on("end", () => {
-    let [assignments, lectures] = filterEvents(data)
-    let dedupedAssignments = dedupeAssignments(assignments)
-    data = lectures.concat(dedupedAssignments)
-    console.log(data)
-  })
+    .pipe(csv.parse({ headers: true }))
+    .on("error", error => console.error(error))
+    .on("data", row => {
+      let newRow = parseRow(row)
+      let segregatedData = segregateData(newRow)
+      data.push(...segregatedData)
+    })
+    .on("end", () => {
+      let [assignments, lectures] = filterEvents(data)
+      let dedupedAssignments = dedupeAssignments(assignments)
+      data = lectures.concat(dedupedAssignments)
+      return data
+    })
+}
+
 function filterEvents(data) {
   let assignments = data.filter(event => {
     if (event.type === "Assignment") {
@@ -72,11 +76,16 @@ const parseRow = row => {
 const segregateData = convertedRow => {
   let [day, lectures, assignments] = convertedRow
   let convertedDay = parseInt(day[1])
-  processLectures(convertedDay, lectures[1].split(","))
-  processAssignments(convertedDay, assignments[1].split(","))
+  let lectureEvents = processLectures(convertedDay, lectures[1].split(","))
+  let assignmentEvents = processAssignments(
+    convertedDay,
+    assignments[1].split(",")
+  )
+  return lectureEvents.concat(assignmentEvents)
 }
 
 function processAssignments(day, assignments) {
+  let processedAssignments = []
   assignments.forEach(assignment => {
     if (assignment === "") {
       return
@@ -84,12 +93,14 @@ function processAssignments(day, assignments) {
       let event = new NotionEvent(assignment.trim())
       event.addDay(day)
       event.addType("Assignment")
-      data.push(event)
+      processedAssignments.push(event)
     }
   })
+  return processedAssignments
 }
 
 function processLectures(day, lectures) {
+  let processedLectures = []
   lectures.forEach(lecture => {
     if (lecture === "") {
       return
@@ -97,7 +108,8 @@ function processLectures(day, lectures) {
       let event = new NotionEvent(lecture)
       event.addDay(day)
       event.addType("Lecture")
-      data.push(event)
+      processedLectures.push(event)
     }
   })
+  return processedLectures
 }
