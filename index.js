@@ -8,10 +8,12 @@ import {
 
 dotenv.config()
 
+//! ALL TODO COMMENTS HERE
+//TODO: Write unit tests for all functions
+//TODO: Port NodeFileSystem code over and organize folder/file structure
+
 const notion = new Client({ auth: process.env.NOTION_KEY })
 const databaseId = process.env.NOTION_DATABASE_ID
-
-//TODO: Write unit tests for all functions
 
 let filter = {
   property: "Standup Status",
