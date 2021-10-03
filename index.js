@@ -1,6 +1,6 @@
 import dotenv from "dotenv"
-import csv from "fast-csv"
 import { Client } from "@notionhq/client"
+import NotionEvent from "./classes/NotionEvent.js"
 
 import {
   updateStandupStatusToNotStarted,
@@ -12,23 +12,61 @@ dotenv.config()
 
 //! ALL TODO COMMENTS HERE
 //TODO: Write unit tests for all functions
-//TODO: Port NodeFileSystem code over and organize folder/file structure
+//TODO: Add module to Notion modules to add Notion Events to a new course database table in Notion
+//TODO: Refactor testFunctions.js - split into appropriate Notion modules
+//TODO: Move courseTemplateParse to its own folder and fix import bug
 
-/* const notion = new Client({ auth: process.env.NOTION_KEY })
+const notion = new Client({ auth: process.env.NOTION_KEY })
 const databaseId = process.env.NOTION_DATABASE_ID
-
-let filter = {
+const testDatabaseId = process.env.NOTION_TEST_DATABASE_ID
+/*
+const filteredDatabase = await queryDatabaseByFilter(notion, databaseId, {
   property: "Standup Status",
   select: {
     does_not_equal: "Cohort Finished",
   },
-}
-
-const filteredDatabase = await queryDatabaseByFilter(notion, databaseId, filter)
-console.log(filteredDatabase.length)
+})
 
 updateStandupStatusToNotStarted(filteredDatabase, notion) */
+const addEventsToDatabase = async (client, databaseId, data, callback) => {
+  for await (event of data) {
+    callback(client, databaseId, event)
+  }
+}
+
+const addNotionCourseEventToDatabase = async (client, databaseId, event) => {
+  try {
+    let response = await client.pages.create({
+      parent: {
+        database_id: databaseId,
+      },
+      properties: {
+        Name: {
+          title: [
+            {
+              text: {
+                content: event.name,
+              },
+            },
+          ],
+        },
+        Day: {
+          number: event.day,
+        },
+        "Last Working Day": {
+          number: event.lastWorkingDay,
+        },
+        Type: {
+          select: {
+            name: event.type,
+          },
+        },
+      },
+    })
+    console.log(response)
+  } catch (error) {
+    console.error(error)
+  }
+}
 
 let data = await convertDataToNotionEvents()
-
-console.log(data)

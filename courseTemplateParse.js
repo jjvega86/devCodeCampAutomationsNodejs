@@ -38,7 +38,6 @@ const convertParsedCourseDataToNotionEvents = async () => {
   let [assignments, lectures] = filterEvents(data)
   let dedupedAssignments = dedupeAssignments(assignments)
   finalData = lectures.concat(dedupedAssignments)
-  console.log(finalData)
   return finalData
 }
 
