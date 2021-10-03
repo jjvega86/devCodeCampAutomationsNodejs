@@ -1,11 +1,12 @@
 import dotenv from "dotenv"
+import csv from "fast-csv"
 import { Client } from "@notionhq/client"
 
 import {
   updateStandupStatusToNotStarted,
   queryDatabaseByFilter,
 } from "./modules/test_functions/testFunctions.js"
-import parseCourseTemplate from "./modules/course_template_parse/courseTemplateParse"
+import { convertDataToNotionEvents } from "./courseTemplateParse.js"
 
 dotenv.config()
 
@@ -27,5 +28,7 @@ const filteredDatabase = await queryDatabaseByFilter(notion, databaseId, filter)
 console.log(filteredDatabase.length)
 
 updateStandupStatusToNotStarted(filteredDatabase, notion) */
-let parsedData = parseCourseTemplate()
-console.log(parsedData)
+
+let data = await convertDataToNotionEvents()
+
+console.log(data)

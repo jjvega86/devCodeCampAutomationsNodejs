@@ -1,37 +1,45 @@
 import fs from "fs"
 import path from "path"
 import csv from "fast-csv"
-import NotionEvent from "../../classes/NotionEvent"
+import NotionEvent from "./classes/NotionEvent.js"
+
+const __dirname = path.resolve()
 
 //* I want to parse each row of the csv
 //* I will create a new rowType for all events in that row
 //* I will then iterate through that new array of events and add to a new csv
 //* I will then import that csv to Notion (ideally in the correct format)
-
-//* This data array will contain all of the individual NotionEvent objects created from all lectures and assignments in the course
-
-export default parseCourseTemplate = () => {
+async function parseCourseTemplate() {
   let data = []
-  fs.createReadStream(
-    path.join(
-      __dirname,
-      "assets",
-      "FullStackSoftwareDevCourseSchedule12week - 12 Weeks V2.csv"
+  return new Promise((resolve, reject) => {
+    fs.createReadStream(
+      path.join(
+        __dirname,
+        "assets",
+        "FullStackSoftwareDevCourseSchedule12week - 12 Weeks V2.csv"
+      )
     )
-  )
-    .pipe(csv.parse({ headers: true }))
-    .on("error", error => console.error(error))
-    .on("data", row => {
-      let newRow = parseRow(row)
-      let segregatedData = segregateData(newRow)
-      data.push(...segregatedData)
-    })
-    .on("end", () => {
-      let [assignments, lectures] = filterEvents(data)
-      let dedupedAssignments = dedupeAssignments(assignments)
-      data = lectures.concat(dedupedAssignments)
-      return data
-    })
+      .pipe(csv.parse({ headers: true }))
+      .on("error", error => reject(error))
+      .on("data", row => {
+        let newRow = parseRow(row)
+        let segregatedData = segregateData(newRow)
+        data.push(...segregatedData)
+      })
+      .on("end", () => {
+        resolve(data)
+      })
+  })
+}
+
+const convertParsedCourseDataToNotionEvents = async () => {
+  let finalData = []
+  let data = await parseCourseTemplate()
+  let [assignments, lectures] = filterEvents(data)
+  let dedupedAssignments = dedupeAssignments(assignments)
+  finalData = lectures.concat(dedupedAssignments)
+  console.log(finalData)
+  return finalData
 }
 
 function filterEvents(data) {
@@ -113,3 +121,5 @@ function processLectures(day, lectures) {
   })
   return processedLectures
 }
+
+export { convertParsedCourseDataToNotionEvents as convertDataToNotionEvents }

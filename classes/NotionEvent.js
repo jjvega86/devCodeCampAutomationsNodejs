@@ -15,4 +15,4 @@ class NotionEvent {
   }
 }
 
-module.exports = NotionEvent
+export default NotionEvent
