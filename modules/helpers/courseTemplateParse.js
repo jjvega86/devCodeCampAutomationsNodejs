@@ -1,14 +1,15 @@
 import fs from "fs"
 import path from "path"
 import csv from "fast-csv"
-import NotionEvent from "./classes/NotionEvent.js"
+import NotionEvent from "../../classes/NotionEvent.js"
 
 const __dirname = path.resolve()
 
-//* I want to parse each row of the csv
-//* I will create a new rowType for all events in that row
-//* I will then iterate through that new array of events and add to a new csv
-//* I will then import that csv to Notion (ideally in the correct format)
+/*
+Parse a .csv file containing data for a devCodeCamp course template
+Convert each row into lecture and assignment events using custom class syntax
+Return a collection of custom events to be added to a Notion database using official API 
+ */
 async function parseCourseTemplate() {
   let data = []
   return new Promise((resolve, reject) => {
