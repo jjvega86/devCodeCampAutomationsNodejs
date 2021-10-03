@@ -29,9 +29,13 @@ const filteredDatabase = await queryDatabaseByFilter(notion, databaseId, {
 
 updateStandupStatusToNotStarted(filteredDatabase, notion) */
 const addEventsToDatabase = async (client, databaseId, data, callback) => {
-  for await (event of data) {
-    callback(client, databaseId, event)
-  }
+  data.forEach(courseEvent => {
+    try {
+      callback(client, databaseId, courseEvent)
+    } catch (error) {
+      console.error(error)
+    }
+  })
 }
 
 const addNotionCourseEventToDatabase = async (client, databaseId, event) => {
@@ -54,7 +58,8 @@ const addNotionCourseEventToDatabase = async (client, databaseId, event) => {
           number: event.day,
         },
         "Last Working Day": {
-          number: event.lastWorkingDay,
+          number:
+            event.lastWorkingDay === "" ? event.day : event.lastWorkingDay,
         },
         Type: {
           select: {
@@ -70,3 +75,9 @@ const addNotionCourseEventToDatabase = async (client, databaseId, event) => {
 }
 
 let data = await convertDataToNotionEvents()
+await addEventsToDatabase(
+  notion,
+  testDatabaseId,
+  data,
+  addNotionCourseEventToDatabase
+)
