@@ -17,7 +17,7 @@ async function parseCourseTemplate() {
       path.join(
         __dirname,
         "assets",
-        "FullStackSoftwareDevCourseSchedule12week - 12 Weeks V2.csv"
+        "FullStackWebDevCourseSchedule - 9 Weeks FT V1 Proposed.csv"
       )
     )
       .pipe(csv.parse({ headers: true }))

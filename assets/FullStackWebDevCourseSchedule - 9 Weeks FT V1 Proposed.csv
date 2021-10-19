@@ -1,0 +1,46 @@
+Week,Day,Lecture,Assignment/Project
+1,1,"Welcome to devCodeCamp, Road Map to Success, Welcome to JS, Variables & Data Types, & Operators","Variables & Data Types Worksheet, Laundry Algorithm"
+,2,"Conditionals, Loops",Conditionals + Loops Worksheet
+,3,"Functions, Debugging",Functions + Debugging Worksheet
+,4,"Professional Developer Growth, Arrays",Arrays Worksheet
+,5,"Using Functions, Intro to Git & GitHub",Day Trip Generator
+2,6,Open Review,Day Trip Generator
+,7,"Algorithms, Problem Solving II, Introduce Gradebook Application",Problem Solving Problems
+,8,"Callbacks & Recursion, High Order Array Methods & Objects, Intermediate Git & GitHub",Most Wanted (Paired)
+,9,,Most Wanted (Paired)
+,10,,Most Wanted (Paired)
+3,11,"Intro to Node.js, Command Line, Modules/Imports/Object Destructuring",ATM Node.js
+,12,"OOP JS, Deliver Question Card",RPSLS (Paired)
+,13,"Classes & Objects Review, SOL of SOLID",RPSLS (Paired)
+,14,,RPSLS (Paired)
+,15,"Design & UX, Wireframing & Prototyping, Instructor Wireframing and Prototyping Demo","Wireframing, prototyping"
+4,16,HTML & CSS & Responsive Design,Website
+,17,HTML & CSS Review (pre-built code examples),Website
+,18,"Regular vs. Arrow Functions, Intro to React.js",React_Tutorial
+,19,,React_Tutorial
+,20,"Importing in React, Web Services, React.js Review (instructor-led)",React Components Worksheet Part 1
+5,21,"Requests & Axios, Promises, React Forms",React Components Worksheet Part 2
+,22,Error Handling,React Music Library (connect to our API)
+,23,,React Music Library (connect to our API)
+,24,,React Music Library (connect to our API)
+,25,"Intermediate Node.js, Intro to Express.js",Music Library - build GET endpoint (replaces our API)
+6,26,,Music Library - build GET endpoint (replaces our API)
+,27,"Intro to MongoDB & Mongoose, Intro to Querying with Mongoose & MongoDB",Node Express MongoDB Mongoose Tutorial
+,28,"Intermediate Querying with Mongoose & MongoDB, Schema Design with Mongoose","Schema Design Demo Video, YouTube Clone - backend"
+,29,,YouTube Clone - backend
+,30,React Hooks,YouTube Clone - frontend
+7,31,,YouTube Clone - frontend
+,32,,YouTube Clone - frontend
+,33,"Agile, Advanced GitHub, JWT",Social Media App
+,34,"MERN Stack, React Router",Social Media App
+,35,JWT in React.js,Social Media App
+8,36,,Social Media App
+,37,Deployment Lecture,Social Media App
+,38,,Social Media App
+,39,Present Social Media,Capstone
+,40,Redux & Redux Demo,Capstone
+9,41,,Capstone
+,42,,Capstone
+,43,,Capstone
+,44,,Capstone
+,45,Present capstone,Capstone
