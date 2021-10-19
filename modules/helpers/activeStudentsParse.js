@@ -5,7 +5,12 @@ import csv from "fast-csv"
 const __dirname = path.resolve()
 
 // returns a Promise with the parsed data resolved or an error
-async function parseActiveStudentsCSV() {
+/*
+ * @param {String} courseType
+ * @param {String} cohortName
+ * @returns {Promise}
+ */
+async function parseActiveStudentsCSV(courseType, cohortName) {
   let data = []
   return new Promise((resolve, reject) => {
     fs.createReadStream(
@@ -18,7 +23,8 @@ async function parseActiveStudentsCSV() {
       .pipe(csv.parse({ headers: true }))
       .on("error", error => reject(error))
       .on("data", row => {
-        console.log(row)
+        row["Cohort"] = cohortName
+        row["Course"] = courseType
         data.push(row)
       })
       .on("end", () => {
