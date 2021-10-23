@@ -1,5 +1,7 @@
 import dotenv from "dotenv"
 import { Client } from "@notionhq/client"
+import promptSync from "prompt-sync"
+const prompt = promptSync()
 
 import { getDatabaseById } from "./modules/notion/notionQuery.js"
 import { convertDataToNotionEvents } from "./modules/helpers/courseTemplateParse.js"
@@ -28,4 +30,27 @@ dotenv.config()
 const notion = new Client({ auth: process.env.NOTION_KEY })
 const testDatabaseId = process.env.NOTION_DATABASE_ID
 
-const queryForStartDateAndCourseType = () => {}
+const queryForStartDate = () => {
+  let dateString = prompt("When will the class start? Format: YYYY/MM/DD")
+  return new Date(dateString)
+}
+
+const queryForCourseType = () => {
+  let courseTypeString = prompt(
+    "What type of class? <1 for Part-Time or 2 Full-Time>"
+  )
+  switch (parseInt(courseTypeString)) {
+    case 1:
+      return { 1: "Full-Time" }
+    case 2:
+      return { 2: "Part-Time" }
+    default:
+      queryForCourseType()
+  }
+}
+
+let date = queryForStartDate()
+console.log(date.toString())
+
+let courseType = queryForCourseType()
+console.log(courseType)
