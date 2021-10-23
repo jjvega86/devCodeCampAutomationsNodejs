@@ -12,21 +12,20 @@ dotenv.config()
 
 //! ALL TODO COMMENTS HERE
 //TODO: Write unit tests for all functions using Jest
-//TODO: Write script to add new students to Active Students database
 //TODO: Write script to add dates to class schedule in Class Schedule Template
+//TODO: Write script to add grading templates for all assignments for a Cohort to Grading. (Set up Notion to auto hide until two weeks out in Not Started)
 
 /* 
-1. Parse .csv file with all Active Students in it
-2. Select Full-Time or Part-Time 
-3. Ask for Cohort name
-4. For each student, add those property values 
-5. Add each student to the Active Students database
+1. Query user for class start date and type of course (full or part time)
+2. Grab all class events from Class Schedule Template database in Notion
+3. Determine Date object for class start date
+4. Starting on Day 1, add the correct date to each class event
+5. When the event day changes, change the active date as well
+6. Check for weekend and holidays, skip those days (and Fridays if part time)
+7. If Assignment event, calculate the last working day and assignment submission date, add to event
 */
 
 const notion = new Client({ auth: process.env.NOTION_KEY })
-//const databaseId = process.env.NOTION_DATABASE_ID
 const testDatabaseId = process.env.NOTION_DATABASE_ID
 
-let data = await parseActiveStudentsCSV("Full-Time", "Parsnips")
-addStudentsToDatabase(notion, testDatabaseId, data)
-console.log(data)
+const queryForStartDateAndCourseType = () => {}
