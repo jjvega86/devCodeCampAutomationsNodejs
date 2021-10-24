@@ -80,23 +80,46 @@ const parseClassScheduleEvents = events => {
 let parsedEvents = parseClassScheduleEvents(database)
 
 function addDatesToClassEvents(events, startDate, formatDate) {
-  let currentDay = 1
-  let currentDate = startDate
+  //TODO: Create a Map with keys as day of class and values as the date of that class day
+  // Then can use built in Map functions to more easily add dates and end dates to objects
+  let currentDate = { date: startDate, dayNum: 1 }
   let eventsWithDates = events.map(event => {
-    if (event.day === currentDay) {
+    //TODO: Refactor using Map with class dates
+    if (event.day === currentDate.dayNum) {
       return { ...event, "Date Assigned": formatDate(currentDate) }
+    } else {
     }
   })
   return eventsWithDates
 }
 
+function populateClassDatesMap(date, finalClassDay, formatDate) {
+  // finalClassDay is the number value of the final course day
+  // Every day from 1 to finalClassDay (ex. 45) will have a date assigned to it
+  // skipping weekends and holidays
+  let classDates = new Map()
+  let holidays = ["2021-11-25", "2021-11-26"]
+  for (let index = 1; index <= finalClassDay; index++) {
+    classDates.set(index, formatDate(date))
+    date.setDate(date.getDate() + 1)
+    while (true) {
+      if (holidays.includes(formatDate(date))) {
+        date.setDate(date.getDate() + 1)
+      } else {
+        break
+      }
+    }
+    if (date.getDay() === 0) {
+      date.setDate(date.getDate() + 1)
+    } else if (date.getDay() === 6) {
+      date.setDate(date.getDate() + 2)
+    }
+  }
+  return classDates
+}
 function formatDate(date) {
   return `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`
 }
 
-let updatedEvents = addDatesToClassEvents(
-  parsedEvents,
-  queryForStartDate(),
-  formatDate
-)
-console.log(updatedEvents)
+let classDates = populateClassDatesMap(new Date("2021/10/18"), 45, formatDate)
+console.log(classDates)
