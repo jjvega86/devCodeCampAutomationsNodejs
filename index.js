@@ -32,25 +32,6 @@ const notion = new Client({ auth: process.env.NOTION_KEY })
 const testDatabaseId = process.env.NOTION_DATABASE_ID
 const classScheduleDbId = process.env.NOTION_CLASS_SCHEDULE_ID
 
-const queryForStartDate = () => {
-  let dateString = prompt("When will the class start? Format: YYYY/MM/DD")
-  return new Date(dateString)
-}
-
-const queryForCourseType = () => {
-  let courseTypeString = prompt(
-    "What type of class? <1 for Part-Time or 2 Full-Time>"
-  )
-  switch (parseInt(courseTypeString)) {
-    case 1:
-      return { 1: "Full-Time" }
-    case 2:
-      return { 2: "Part-Time" }
-    default:
-      queryForCourseType()
-  }
-}
-
 const getClassSchedule = async (client, databaseId) => {
   try {
     let response = await client.databases.query({
@@ -62,8 +43,6 @@ const getClassSchedule = async (client, databaseId) => {
     console.log(error)
   }
 }
-
-let database = await getClassSchedule(notion, classScheduleDbId)
 
 const parseClassScheduleEvents = events => {
   let parsedDatabase = events.map(page => {
@@ -81,7 +60,7 @@ const parseClassScheduleEvents = events => {
 function addDatesToClassEvents(events, classDates) {
   let eventsWithDates = events.map(event => {
     //TODO: Refactor using Map with class dates
-    if (event.type === "Assignment") {
+    if (event.day !== event.lastWorkingDay) {
       return {
         ...event,
         start: classDates.get(event.day),
@@ -124,10 +103,33 @@ function isHoliday(date) {
   }
 }
 function formatDate(date) {
-  return `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`
+  return `${date.getFullYear()}-${date.getMonth() + 1}-${
+    date.getDate() < 10 ? "0" + date.getDate() : date.getDate()
+  }`
 }
 
+const updateClassEvents = async (client, eventsWithDates) => {
+  eventsWithDates.forEach(event => {
+    try {
+      client.pages.update({
+        page_id: event.pageId,
+        properties: {
+          "Date Assigned": {
+            date: {
+              start: event.start,
+              end: event.end ? event.end : null,
+            },
+          },
+        },
+      })
+    } catch (error) {
+      console.error(error)
+    }
+  })
+}
+
+let database = await getClassSchedule(notion, classScheduleDbId)
 let parsedEvents = parseClassScheduleEvents(database)
 let classDates = populateClassDatesMap(new Date("2021/10/18"), 45, formatDate)
 let eventsWithDates = addDatesToClassEvents(parsedEvents, classDates)
-console.log(eventsWithDates)
+updateClassEvents(notion, eventsWithDates)
