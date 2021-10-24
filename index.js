@@ -51,9 +51,11 @@ const queryForCourseType = () => {
 }
 
 const getClassSchedule = async (client, databaseId) => {
-  //TODO: add sort to sort by day ascending
   try {
-    let response = await client.databases.query({ database_id: databaseId })
+    let response = await client.databases.query({
+      database_id: databaseId,
+      sorts: [{ property: "Day", direction: "ascending" }],
+    })
     return response.results
   } catch (error) {
     console.log(error)
@@ -69,10 +71,32 @@ const parseClassScheduleEvents = events => {
       day: page.properties.Day.number,
       type: page.properties.Type.select.name,
       lastWorkingDay: page.properties["Last Working Day"].number,
+      name: page.properties.Name.title[0].text.content,
     }
   })
   return parsedDatabase
 }
 
 let parsedEvents = parseClassScheduleEvents(database)
-console.log(parsedEvents)
+
+function addDatesToClassEvents(events, startDate, formatDate) {
+  let currentDay = 1
+  let currentDate = startDate
+  let eventsWithDates = events.map(event => {
+    if (event.day === currentDay) {
+      return { ...event, "Date Assigned": formatDate(currentDate) }
+    }
+  })
+  return eventsWithDates
+}
+
+function formatDate(date) {
+  return `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`
+}
+
+let updatedEvents = addDatesToClassEvents(
+  parsedEvents,
+  queryForStartDate(),
+  formatDate
+)
+console.log(updatedEvents)
