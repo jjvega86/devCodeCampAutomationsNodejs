@@ -21,10 +21,11 @@ dotenv.config()
 1. Query user for class start date and type of course (full or part time) DONE
 2. Grab all class events from Class Schedule Template database in Notion DONE
 3. Parse data to create simpler objects for each event (pageId, type, day, last working day) DONE
-4. Starting on Day 1, add the correct date to each class event. Determine Date object for class start date
-5. When the event day changes, change the active date as well
-6. Check for weekend and holidays, skip those days (and Fridays if part time)
-7. If Assignment event, calculate the last working day and assignment submission date, add to event
+4. Starting on Day 1, add the correct date to each class event. Determine Date object for class start date DONE
+5. When the event day changes, change the active date as well DONE
+6. Check for weekend and holidays, skip those days (and Fridays if part time) DONE
+7. If Assignment event, calculate the last working day and assignment submission date, add to event DONE
+8. Make API requests to update each class event with the dates generated
 */
 
 const notion = new Client({ auth: process.env.NOTION_KEY })
@@ -77,49 +78,56 @@ const parseClassScheduleEvents = events => {
   return parsedDatabase
 }
 
-let parsedEvents = parseClassScheduleEvents(database)
-
-function addDatesToClassEvents(events, startDate, formatDate) {
-  //TODO: Create a Map with keys as day of class and values as the date of that class day
-  // Then can use built in Map functions to more easily add dates and end dates to objects
-  let currentDate = { date: startDate, dayNum: 1 }
+function addDatesToClassEvents(events, classDates) {
   let eventsWithDates = events.map(event => {
     //TODO: Refactor using Map with class dates
-    if (event.day === currentDate.dayNum) {
-      return { ...event, "Date Assigned": formatDate(currentDate) }
+    if (event.type === "Assignment") {
+      return {
+        ...event,
+        start: classDates.get(event.day),
+        end: classDates.get(event.lastWorkingDay),
+      }
     } else {
+      return { ...event, start: classDates.get(event.day) }
     }
   })
   return eventsWithDates
 }
 
 function populateClassDatesMap(date, finalClassDay, formatDate) {
-  // finalClassDay is the number value of the final course day
-  // Every day from 1 to finalClassDay (ex. 45) will have a date assigned to it
-  // skipping weekends and holidays
   let classDates = new Map()
-  let holidays = ["2021-11-25", "2021-11-26"]
   for (let index = 1; index <= finalClassDay; index++) {
     classDates.set(index, formatDate(date))
     date.setDate(date.getDate() + 1)
-    while (true) {
-      if (holidays.includes(formatDate(date))) {
-        date.setDate(date.getDate() + 1)
-      } else {
-        break
-      }
-    }
-    if (date.getDay() === 0) {
+    // add day. Then check if day is a weekend or holiday. If either condition is true, keep incrementing days (always checking for both for each day)
+    while (isWeekend(date) || isHoliday(date)) {
       date.setDate(date.getDate() + 1)
-    } else if (date.getDay() === 6) {
-      date.setDate(date.getDate() + 2)
     }
   }
   return classDates
+}
+
+function isWeekend(date) {
+  if (date.getDay() === 0 || date.getDay() === 6) {
+    return true
+  } else {
+    return false
+  }
+}
+
+function isHoliday(date) {
+  let holidays = ["2021-11-25", "2021-11-26"]
+  if (holidays.includes(formatDate(date))) {
+    return true
+  } else {
+    return false
+  }
 }
 function formatDate(date) {
   return `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`
 }
 
+let parsedEvents = parseClassScheduleEvents(database)
 let classDates = populateClassDatesMap(new Date("2021/10/18"), 45, formatDate)
-console.log(classDates)
+let eventsWithDates = addDatesToClassEvents(parsedEvents, classDates)
+console.log(eventsWithDates)
