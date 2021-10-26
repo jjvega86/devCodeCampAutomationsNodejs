@@ -5,7 +5,7 @@
   "description": "A Node.js version of several automation scripts used to administer the bootcamp's Notion platform",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "jest",
     "start": "node index.js"
   },
   "author": "JJ Vega",
@@ -15,5 +15,18 @@
     "dotenv": "^10.0.0",
     "fast-csv": "^4.3.6",
     "prompt-sync": "^4.2.0"
+  },
+  "devDependencies": {
+    "@babel/plugin-transform-modules-commonjs": "^7.15.4",
+    "jest": "^27.3.1"
+  },
+  "babel": {
+    "env": {
+      "test": {
+        "plugins": [
+          "@babel/plugin-transform-modules-commonjs"
+        ]
+      }
+    }
   }
 }
