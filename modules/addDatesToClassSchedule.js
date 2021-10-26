@@ -124,4 +124,4 @@ const addDatesToClassSchedule = async client => {
   process.on("exit", () => console.log("Dates added to class schedule!"))
 }
 
-export { addDatesToClassSchedule as default }
+export { addDatesToClassSchedule as default, isWeekend }
