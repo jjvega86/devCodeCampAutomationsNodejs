@@ -35,15 +35,15 @@ function populateClassDatesMap(date, finalClassDay, formatDate) {
     classDates.set(index, formatDate(date))
     date.setDate(date.getDate() + 1)
     // add day. Then check if day is a weekend or holiday. If either condition is true, keep incrementing days (always checking for both for each day)
-    while (isWeekend(date) || isHoliday(date)) {
+    while (isNonSchoolDay(date) || isHoliday(date)) {
       date.setDate(date.getDate() + 1)
     }
   }
   return classDates
 }
 
-function isWeekend(date) {
-  if (date.getDay() === 0 || date.getDay() === 6) {
+function isNonSchoolDay(date) {
+  if (date.getDay() === 0 || date.getDay() === 5 || date.getDay() === 6) {
     return true
   } else {
     return false
@@ -137,4 +137,4 @@ const addDatesToClassSchedule = async client => {
   process.on("exit", () => console.log("Dates added to class schedule!"))
 }
 
-export { addDatesToClassSchedule as default, isWeekend }
+export { addDatesToClassSchedule as default, isNonSchoolDay as isWeekend }
