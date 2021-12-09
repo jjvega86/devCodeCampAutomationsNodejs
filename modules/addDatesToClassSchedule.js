@@ -52,7 +52,20 @@ function isWeekend(date) {
 
 function isHoliday(date) {
   // add any holidays in the year using strings in the below array
-  let holidays = ["2021-11-25", "2021-11-26"]
+  let holidays = [
+    "2021-11-25",
+    "2021-11-26",
+    "2021-12-24",
+    "2021-12-25",
+    "2021-12-26",
+    "2021-12-27",
+    "2021-12-28",
+    "2021-12-29",
+    "2021-12-30",
+    "2021-12-31",
+    "2022-01-01",
+    "2022-01-02",
+  ]
   if (holidays.includes(formatDate(date))) {
     return true
   } else {
@@ -60,9 +73,9 @@ function isHoliday(date) {
   }
 }
 function formatDate(date) {
-  return `${date.getFullYear()}-${date.getMonth() + 1}-${
-    date.getDate() < 10 ? "0" + date.getDate() : date.getDate()
-  }`
+  return `${date.getFullYear()}-${
+    date.getMonth() + 1 < 10 ? "0" + (date.getMonth() + 1) : date.getMonth() + 1
+  }-${date.getDate() < 10 ? "0" + date.getDate() : date.getDate()}`
 }
 
 function addDatesToClassEvents(events, classDates) {
