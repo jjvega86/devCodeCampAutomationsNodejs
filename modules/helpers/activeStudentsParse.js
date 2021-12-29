@@ -4,9 +4,9 @@ import csv from "fast-csv"
 
 const __dirname = path.resolve()
 
-// returns a Promise with the parsed data resolved or an error
+// returns a Promise with the parsed data resolved or an error. Be sure to await the function call when importing.
 /*
- * @param {String} courseType
+ * @param {String} courseType - "Full-Time" or "Part-Time"
  * @param {String} cohortName
  * @returns {Promise}
  */
@@ -17,7 +17,7 @@ async function parseActiveStudentsCSV(courseType, cohortName) {
       path.join(
         __dirname,
         "assets",
-        "Admissions to Instruction - Nov 1 - FT.csv"
+        "Admissions to Instruction - Dec 13- FT.csv"
       )
     )
       .pipe(csv.parse({ headers: true }))
