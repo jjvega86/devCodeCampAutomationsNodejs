@@ -43,7 +43,7 @@ function populateClassDatesMap(date, finalClassDay, formatDate) {
 }
 
 function isNonSchoolDay(date) {
-  if (date.getDay() === 0 || date.getDay() === 5 || date.getDay() === 6) {
+  if (date.getDay() === 0 || date.getDay() === 6) {
     return true
   } else {
     return false
@@ -119,6 +119,7 @@ const updateClassEvents = async (client, eventsWithDates) => {
 const addDatesToClassSchedule = async client => {
   let userInput = prompt("What date does the class start? <YYYY/MM/DD>")
   let numberOfClassDays = parseInt(prompt("How many days are in the course?"))
+  //TODO: Find number of days of class in the week (M-Th, M-Fr)
 
   let notionEvents = await getClassSchedule(
     client,

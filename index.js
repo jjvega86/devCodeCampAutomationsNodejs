@@ -18,10 +18,16 @@ const notion = new Client({ auth: process.env.NOTION_KEY })
 //* See addDatesToClassSchedule as example. Each one should export a single default function
 //TODO: Write script to add grading templates for all assignments for a Cohort to Grading. (Set up Notion to auto hide until two weeks out in Not Started)
 
-/* 
-Example of adding active students to the Notion database
-let students = await parseActiveStudentsCSV("Full-Time", "Polonium")
-addStudentsToDatabase(notion, process.env.NOTION_DATABASE_ID, students) 
-*/
+/* Example of adding active students to the Notion database
+ */
+/* let students = await parseActiveStudentsCSV("Part-Time", "Web Dev Astatine")
+addStudentsToDatabase(notion, process.env.NOTION_DATABASE_ID, students) */
 
-addDatesToClassSchedule(notion)
+//addDatesToClassSchedule(notion)
+
+/* Example of adding new course template from Excel doc
+This will grab the CSV from assets
+Convert to events
+Then add those events to the Class Schedule Template database in Notion */
+/* let events = await convertDataToNotionEvents()
+addEventsToDatabase(notion, process.env.NOTION_CLASS_SCHEDULE_ID, events) */

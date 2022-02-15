@@ -3,11 +3,20 @@
 const addStudentsToDatabase = (client, databaseId, data) => {
   data.forEach(student => {
     try {
+      studentValidate(student)
       addStudentToActiveStudents(client, databaseId, student)
     } catch (error) {
       console.error(error)
     }
   })
+}
+
+function studentValidate(student) {
+  for (let property in student) {
+    if (!student[property]) {
+      student[property] = "N/A"
+    }
+  }
 }
 
 const addStudentToActiveStudents = async (client, databaseId, student) => {
@@ -57,26 +66,6 @@ const addStudentToActiveStudents = async (client, databaseId, student) => {
             },
           ],
         },
-        City: {
-          rich_text: [
-            {
-              type: "text",
-              text: {
-                content: student["City"],
-              },
-            },
-          ],
-        },
-        State: {
-          rich_text: [
-            {
-              type: "text",
-              text: {
-                content: student["State"],
-              },
-            },
-          ],
-        },
         "Admissions Notes": {
           rich_text: [
             {
@@ -89,7 +78,6 @@ const addStudentToActiveStudents = async (client, databaseId, student) => {
         },
       },
     })
-    console.log(response)
   } catch (error) {
     console.error(error)
   }

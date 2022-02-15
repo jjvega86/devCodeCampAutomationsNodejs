@@ -17,7 +17,7 @@ async function parseActiveStudentsCSV(courseType, cohortName) {
       path.join(
         __dirname,
         "assets",
-        "Admissions to Instruction - Dec 13- FT.csv"
+        "Admissions to Instruction- 2022 - Feb 14 - PT.csv"
       )
     )
       .pipe(csv.parse({ headers: true }))
